@@ -63,7 +63,7 @@ function dueDatePicker(wrapper: VueWrapper) {
 	return wrapper.findAllComponents(Datepicker)[0]!
 }
 
-async function mountDetail(taskId = 1, visited: RouteLocationRaw[] = [], backdropView?: string, stubs: Record<string, unknown> = {}) {
+async function mountDetail(taskId = 1, {visited = [], backdropView, stubs = {}}: {visited?: RouteLocationRaw[], backdropView?: string, stubs?: Record<string, unknown>} = {}) {
 	queryClient = new QueryClient({defaultOptions: {queries: {retry: false}}})
 	const router = createRouter({
 		history: createMemoryHistory(),
@@ -158,7 +158,7 @@ describe('TaskDetailView mark done and go back', () => {
 
 	it('marks the task done and returns to the project list it was opened from', async () => {
 		projects[5] = {id: 5, title: 'Origin'}
-		const wrapper = await mountDetail(1, ['/projects/5', {path: '/tasks/1', state: {back: '/projects/5'}}])
+		const wrapper = await mountDetail(1, {visited: ['/projects/5', {path: '/tasks/1', state: {back: '/projects/5'}}]})
 
 		pressShiftT()
 		await flushPromises()
@@ -169,7 +169,7 @@ describe('TaskDetailView mark done and go back', () => {
 	})
 
 	it('falls back to the task project when opened directly', async () => {
-		const wrapper = await mountDetail(1, ['/tasks/1'])
+		const wrapper = await mountDetail(1, {visited: ['/tasks/1']})
 
 		pressShiftT()
 		await flushPromises()
@@ -179,7 +179,7 @@ describe('TaskDetailView mark done and go back', () => {
 
 	it('stays on the task when saving fails', async () => {
 		sdk.patchTasksRead.mockRejectedValue(new Error('nope'))
-		const wrapper = await mountDetail(1, ['/tasks/1'])
+		const wrapper = await mountDetail(1, {visited: ['/tasks/1']})
 
 		pressShiftT()
 		await flushPromises()
@@ -191,7 +191,7 @@ describe('TaskDetailView mark done and go back', () => {
 
 	it('does nothing for a task that is already done', async () => {
 		sdk.tasksRead.mockImplementation(async ({path}: {path: {task: number}}) => ({data: serverTask(path.task, {done: true})}))
-		const wrapper = await mountDetail(1, ['/tasks/1'])
+		const wrapper = await mountDetail(1, {visited: ['/tasks/1']})
 
 		pressShiftT()
 		await flushPromises()
@@ -225,7 +225,7 @@ describe('TaskDetailView in a trashed project', () => {
 			detail: 'project in trash',
 			details: inTrash,
 		}))
-		const wrapper = await mountDetail(1, ['/tasks/1'], backdropView)
+		const wrapper = await mountDetail(1, {visited: ['/tasks/1'], backdropView})
 
 		expect(message.error).not.toHaveBeenCalled()
 		expect(wrapper.findComponent(ProjectInTrashNotice).props('inTrash')).toEqual(inTrash)
@@ -264,7 +264,7 @@ describe('TaskDetailView in a trashed project', () => {
 			detail: 'task in trash',
 			details: taskInTrash,
 		}))
-		const wrapper = await mountDetail(1, ['/tasks/1'])
+		const wrapper = await mountDetail(1, {visited: ['/tasks/1']})
 		const projectNotice = wrapper.findComponent(ProjectInTrashNotice).element as HTMLElement
 		projectNotice.tabIndex = -1
 		projectNotice.focus()
@@ -335,7 +335,7 @@ describe('TaskDetailView property sidebar', () => {
 		[{repeat_after: 0, repeat_mode: 2}, 'task.repeat.fromCurrentDate'],
 	])('summarizes repeat settings %o as %s', async (repeat, summary) => {
 		serve(repeat)
-		const wrapper = await mountDetail(1, [], undefined, renderButtons)
+		const wrapper = await mountDetail(1, {stubs: renderButtons})
 
 		expect(wrapper.find('.property-repeat .property-value-button').text()).toBe(summary)
 	})
