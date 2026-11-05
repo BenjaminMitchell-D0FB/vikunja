@@ -512,7 +512,6 @@
 							>
 								<RepeatAfter
 									:model-value="task"
-									:disabled="!canWrite"
 									@update:modelValue="saveTask($event)"
 								/>
 							</div>
@@ -957,14 +956,14 @@ function resetSections() {
 const isSet = computed(() => ({
 	assignees: (task.value.assignees?.length ?? 0) > 0,
 	labels: (task.value.labels?.length ?? 0) > 0,
-	priority: (task.value.priority ?? PRIORITIES.UNSET) !== PRIORITIES.UNSET,
+	priority: task.value.priority !== PRIORITIES.UNSET,
 	percentDone: (task.value.percent_done ?? 0) > 0,
 	dueDate: Boolean(parseDateOrNull(task.value.due_date)),
 	startDate: Boolean(parseDateOrNull(task.value.start_date)),
 	endDate: Boolean(parseDateOrNull(task.value.end_date)),
 	reminders: (task.value.reminders?.length ?? 0) > 0,
 	repeatAfter: (task.value.repeat_after ?? 0) > 0
-		|| (task.value.repeat_mode ?? TASK_REPEAT_MODES.REPEAT_MODE_DEFAULT) !== TASK_REPEAT_MODES.REPEAT_MODE_DEFAULT,
+		|| task.value.repeat_mode !== TASK_REPEAT_MODES.REPEAT_MODE_DEFAULT,
 	color: Boolean(color.value),
 }))
 const hasAnyProperty = computed(() => Object.values(isSet.value).some(Boolean))
@@ -984,7 +983,7 @@ const repeatSummary = computed(() => {
 	const fromCurrentDate = task.value.repeat_mode === TASK_REPEAT_MODES.REPEAT_MODE_FROM_CURRENT_DATE
 	const {amount, type} = parseRepeatAfter(task.value.repeat_after ?? 0)
 	if (amount === 0) {
-		return fromCurrentDate ? t('task.repeat.fromCurrentDate') : t('misc.notSet')
+		return t('task.repeat.fromCurrentDate')
 	}
 	const interval = t(`task.repeat.summary.${type}`, {count: amount}, amount)
 	return fromCurrentDate
