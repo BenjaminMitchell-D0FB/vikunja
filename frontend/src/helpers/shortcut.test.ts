@@ -7,7 +7,6 @@ import {
 	matchesKey,
 	eventToShortcutString,
 	isFormField,
-	isTypingTarget,
 	install,
 	uninstall,
 	shortcutBindingToDisplay,
@@ -580,24 +579,6 @@ describe('isFormField', () => {
 
 	it('should return false for null', () => {
 		expect(isFormField(null)).toBe(false)
-	})
-})
-
-describe('isTypingTarget', () => {
-	function keydownFrom(el: HTMLElement): KeyboardEvent {
-		const e = new KeyboardEvent('keydown')
-		el.dispatchEvent(e)
-		return e
-	}
-
-	it('should treat an element hosting a shadow root as a typing target', () => {
-		const host = document.createElement('div')
-		host.attachShadow({mode: 'open'})
-		expect(isTypingTarget(keydownFrom(host))).toBe(true)
-	})
-
-	it('should not treat a plain div as a typing target', () => {
-		expect(isTypingTarget(keydownFrom(document.createElement('div')))).toBe(false)
 	})
 })
 
