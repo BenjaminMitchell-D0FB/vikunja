@@ -182,10 +182,10 @@
 					/>
 				</div>
 
-				<aside class="column is-one-third action-buttons task-sidebar d-print-none">
+				<aside class="column is-one-third action-buttons task-sidebar">
 					<div
 						v-if="canWrite"
-						class="sidebar-toolbar"
+						class="sidebar-toolbar d-print-none"
 					>
 						<XButton
 							v-shortcut="SHORTCUTS.taskDetail.done"
@@ -218,7 +218,6 @@
 									v-cy="'taskDetail.moreActions'"
 									class="toolbar-icon-button"
 									:aria-label="$t('task.detail.moreActions')"
-									aria-haspopup="menu"
 									:aria-expanded="open"
 									@click="toggleOpen"
 								>
@@ -1094,7 +1093,7 @@ function setFieldActive(fieldName: FieldType) {
 	})
 }
 
-// Rows and menu items aren't always mounted, so v-shortcut has nothing to click.
+// v-shortcut only clicks; these need focus, or live in the closed actions menu.
 const fieldShortcuts = ([
 	[SHORTCUTS.taskDetail.labels, () => setFieldActive('labels')],
 	[SHORTCUTS.taskDetail.priority, () => setFieldActive('priority')],
@@ -1453,7 +1452,7 @@ h2 .button {
 // On narrow screens the properties belong above the description, not below the
 // comments. Bulma stacks columns as blocks there, so flex is needed for `order`.
 .task-columns {
-	@media screen and (max-width: $tablet) {
+	@media screen and (max-width: $tablet), print {
 		display: flex;
 		flex-direction: column;
 	}
@@ -1464,8 +1463,23 @@ h2 .button {
 .task-sidebar {
 	container: task-sidebar / inline-size;
 
-	@media screen and (max-width: $tablet) {
+	@media screen and (max-width: $tablet), print {
 		order: -1;
+	}
+
+	@media print {
+		inline-size: 100% !important;
+
+		.property:not(.is-set),
+		.remove,
+		.chevron,
+		:deep(.multiselect input),
+		:deep(.remove-assignee),
+		:deep(.tag .delete),
+		:deep(.reminders .remove),
+		:deep(.reminders > :not(.reminder-input)) {
+			display: none;
+		}
 	}
 }
 
@@ -1807,8 +1821,33 @@ h2 .button {
 		margin: .375rem .5rem;
 	}
 
-	:deep(.assignees-list .user) {
-		margin-block: 0;
+	// Overlapping avatars can't wrap, so a long list would overflow the row.
+	:deep(.assignees-list) {
+		flex-wrap: wrap;
+		gap: .375rem;
+		padding-block-start: .25rem;
+
+		.assignee:not(:first-child) {
+			margin-inline-start: 0;
+		}
+
+		.remove-assignee {
+			inset-block-start: -.25rem;
+			inset-inline: auto -.375rem;
+			inline-size: 1rem;
+			block-size: 1rem;
+			padding: 0;
+			font-size: .625rem;
+			box-shadow: var(--shadow-sm);
+		}
+
+		.user {
+			margin: 0;
+		}
+
+		.username {
+			display: none;
+		}
 	}
 }
 
