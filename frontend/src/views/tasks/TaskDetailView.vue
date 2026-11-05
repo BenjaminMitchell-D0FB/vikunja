@@ -1493,7 +1493,7 @@ h2 .button {
 	align-items: center;
 	justify-content: center;
 	inline-size: 2.5rem;
-	block-size: $button-height;
+	min-block-size: $button-height;
 	border-radius: $radius;
 	border: 1px solid var(--grey-300);
 	color: var(--grey-600);
