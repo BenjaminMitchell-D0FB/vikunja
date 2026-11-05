@@ -1166,6 +1166,11 @@
       "markAsDone": "Mark '{task}' as done",
       "scrollToBottom": "Scroll to bottom",
       "moreActions": "More actions",
+      "properties": {
+        "dueDate": "Due date",
+        "startDate": "Start date",
+        "endDate": "End date"
+      },
       "actions": {
         "attachments": "Add attachments",
         "timeTracking": "Track time",

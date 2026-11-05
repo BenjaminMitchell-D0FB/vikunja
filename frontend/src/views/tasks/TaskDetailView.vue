@@ -373,7 +373,7 @@
 						>
 							<dt>
 								<Icon icon="calendar" />
-								{{ $t('task.attributes.dueDate') }}
+								{{ $t('task.detail.properties.dueDate') }}
 							</dt>
 							<dd>
 								<Datepicker
@@ -381,7 +381,7 @@
 									v-model="dueDateInput"
 									:choose-date-label="$t('task.detail.chooseDueDate')"
 									:empty-label="$t('misc.notSet')"
-									:title="$t('task.attributes.dueDate')"
+									:title="$t('task.detail.properties.dueDate')"
 									:disabled="taskBusy || !canWrite"
 									@closeOnChange="saveTask()"
 								/>
@@ -403,7 +403,7 @@
 						>
 							<dt>
 								<Icon icon="play" />
-								{{ $t('task.attributes.startDate') }}
+								{{ $t('task.detail.properties.startDate') }}
 							</dt>
 							<dd>
 								<Datepicker
@@ -411,7 +411,7 @@
 									v-model="startDateInput"
 									:choose-date-label="$t('task.detail.chooseStartDate')"
 									:empty-label="$t('misc.notSet')"
-									:title="$t('task.attributes.startDate')"
+									:title="$t('task.detail.properties.startDate')"
 									:disabled="taskBusy || !canWrite"
 									@closeOnChange="saveTask()"
 								/>
@@ -433,7 +433,7 @@
 						>
 							<dt>
 								<Icon icon="stop" />
-								{{ $t('task.attributes.endDate') }}
+								{{ $t('task.detail.properties.endDate') }}
 							</dt>
 							<dd>
 								<Datepicker
@@ -441,7 +441,7 @@
 									v-model="endDateInput"
 									:choose-date-label="$t('task.detail.chooseEndDate')"
 									:empty-label="$t('misc.notSet')"
-									:title="$t('task.attributes.endDate')"
+									:title="$t('task.detail.properties.endDate')"
 									:disabled="taskBusy || !canWrite"
 									@closeOnChange="saveTask()"
 								/>
@@ -1491,6 +1491,7 @@ h2 .button {
 
 	.button--mark-done {
 		flex: 1;
+		text-transform: none;
 		justify-content: flex-start;
 		background-color: transparent;
 		box-shadow: none;
