@@ -358,7 +358,6 @@
 							</dt>
 							<dd>
 								<PercentDoneSelect
-									:ref="e => setFieldRef('percentDone', e)"
 									v-model="task.percent_done"
 									:disabled="!canWrite"
 									@update:modelValue="setPercentDone"
@@ -407,7 +406,6 @@
 							</dt>
 							<dd>
 								<Datepicker
-									ref="startDatePicker"
 									v-model="startDateInput"
 									:choose-date-label="$t('task.detail.chooseStartDate')"
 									:empty-label="$t('misc.notSet')"
@@ -437,7 +435,6 @@
 							</dt>
 							<dd>
 								<Datepicker
-									ref="endDatePicker"
 									v-model="endDateInput"
 									:choose-date-label="$t('task.detail.chooseEndDate')"
 									:empty-label="$t('misc.notSet')"
@@ -487,7 +484,6 @@
 							</dt>
 							<dd>
 								<BaseButton
-									:ref="e => setFieldRef('repeatAfter', e)"
 									class="property-value-button"
 									:class="{'property-empty': !isSet.repeatAfter}"
 									:disabled="!canWrite"
@@ -927,15 +923,11 @@ type FieldType =
 	| 'attachments'
 	| 'color'
 	| 'dueDate'
-	| 'endDate'
 	| 'labels'
 	| 'moveProject'
-	| 'percentDone'
 	| 'priority'
 	| 'relatedTasks'
 	| 'reminders'
-	| 'repeatAfter'
-	| 'startDate'
 	| 'timeTracking'
 
 type SectionType = 'attachments' | 'moveProject' | 'relatedTasks' | 'timeTracking'
@@ -1034,21 +1026,15 @@ const activeFieldElements: { [id in FieldType]: HTMLElement | null } = reactive(
 	attachments: null,
 	color: null,
 	dueDate: null,
-	endDate: null,
 	labels: null,
 	moveProject: null,
-	percentDone: null,
 	priority: null,
 	relatedTasks: null,
 	reminders: null,
-	repeatAfter: null,
-	startDate: null,
 	timeTracking: null,
 })
 
 const dueDatePicker = useTemplateRef<InstanceType<typeof Datepicker>>('dueDatePicker')
-const startDatePicker = useTemplateRef<InstanceType<typeof Datepicker>>('startDatePicker')
-const endDatePicker = useTemplateRef<InstanceType<typeof Datepicker>>('endDatePicker')
 
 function setFieldRef(name: FieldType, e: Element | ComponentPublicInstance | null) {
 	const element = e instanceof Element ? e : e?.$el
@@ -1061,22 +1047,8 @@ function setFieldActive(fieldName: FieldType) {
 	if (fieldName in activeSections) {
 		activeSections[fieldName as SectionType] = true
 	}
-	if (fieldName === 'repeatAfter') {
-		repeatEditorOpen.value = true
-	}
 	nextTick(() => {
-		let datepicker: InstanceType<typeof Datepicker> | null = null
-		switch (fieldName) {
-			case 'dueDate':
-				datepicker = dueDatePicker.value
-				break
-			case 'startDate':
-				datepicker = startDatePicker.value
-				break
-			case 'endDate':
-				datepicker = endDatePicker.value
-				break
-		}
+		const datepicker = fieldName === 'dueDate' ? dueDatePicker.value : null
 		const el: HTMLElement | null = datepicker?.$el ?? activeFieldElements[fieldName]
 
 		if (!el) {
