@@ -131,8 +131,10 @@ test.describe('Link shares', () => {
 		await expect(page.locator('.task-view .property-priority')).toHaveCount(0)
 		await expect(reminders.getByRole('button', {name: 'Add a reminder…'})).toHaveCount(0)
 
-		await reminders.locator('.reminder-detail button').click({force: true})
-		await expect(page.locator('.reminder-options-popup')).toHaveCount(0)
+		const reminderTrigger = reminders.locator('.reminder-detail > .simple-button')
+		await expect(reminderTrigger).toBeDisabled()
+		await reminderTrigger.click({force: true})
+		await expect(page.locator('.reminder-options-popup.is-open')).toHaveCount(0)
 	})
 
 	// Regression test for #2546: a logged-in user opening a public link share URL
