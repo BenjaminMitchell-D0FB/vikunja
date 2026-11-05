@@ -814,10 +814,6 @@ test.describe('Task', () => {
 					task_id: tasks[0].id,
 					label_id: labels[0].id,
 				})
-				await UserProjectFactory.create(5, {
-					project_id: 1,
-					user_id: '{increment}',
-				})
 				await TaskAssigneeFactory.create(1, {
 					task_id: tasks[0].id,
 					user_id: users[1].id,
