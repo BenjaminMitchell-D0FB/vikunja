@@ -1424,10 +1424,7 @@ h2 .button {
 	}
 }
 
-// --- Sidebar ---------------------------------------------------------------
-
-// On narrow screens the properties belong above the description, not below the
-// comments. Bulma stacks columns as blocks there, so flex is needed for `order`.
+// Bulma stacks columns as blocks on narrow screens, so flex is needed for `order`.
 .task-columns {
 	@media screen and (max-width: $tablet), print {
 		display: flex;
@@ -1435,8 +1432,7 @@ h2 .button {
 	}
 }
 
-// Not sticky: the property list can be taller than the viewport and its popups
-// open downwards, so a stuck sidebar would leave them unreachable.
+// Not sticky: the list can outgrow the viewport and its popups open downwards.
 .task-sidebar {
 	container: task-sidebar / inline-size;
 
@@ -1522,8 +1518,6 @@ h2 .button {
 	}
 }
 
-// --- Property list ---------------------------------------------------------
-
 .property-list {
 	margin: 0;
 	border-block-start: 1px solid var(--grey-200);
@@ -1578,7 +1572,6 @@ h2 .button {
 		}
 	}
 
-	// A filled row reads darker than an empty one so the state is visible at a glance.
 	&.is-set dt {
 		color: var(--grey-700);
 
@@ -1602,7 +1595,6 @@ h2 .button {
 		}
 	}
 
-	// Touch screens can't hover, so the buttons stay visible there.
 	@media (hover: hover) {
 		.remove,
 		:deep(.reminders .remove),
@@ -1675,7 +1667,6 @@ h2 .button {
 	}
 }
 
-// Controls sit flat on the row and only reveal their chrome on interaction.
 .property > dd {
 	:deep(.select) {
 		inline-size: 100%;
@@ -1699,7 +1690,6 @@ h2 .button {
 			opacity: 1;
 		}
 
-		// Read-only values should read as values, not as greyed-out controls.
 		select:disabled {
 			color: var(--text);
 			opacity: 1;
@@ -1725,7 +1715,6 @@ h2 .button {
 		inline-size: 100%;
 		min-inline-size: 0;
 
-		// Lets the input share the line with selected items instead of always wrapping below them.
 		input {
 			flex: 1 1 5rem;
 			min-inline-size: 5rem;
