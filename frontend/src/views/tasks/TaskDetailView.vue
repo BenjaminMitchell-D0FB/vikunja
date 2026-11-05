@@ -1539,7 +1539,7 @@ h2 .button {
 		gap: .5rem;
 		// Line up the label with the value's first line, whose control has its own vertical padding.
 		min-block-size: 2rem;
-		color: var(--grey-500);
+		color: var(--grey-600);
 		font-weight: 500;
 		transition: color $transition;
 
@@ -1613,13 +1613,13 @@ h2 .button {
 	}
 
 	&:not(.is-set) > dd :deep(select) {
-		color: var(--grey-500);
+		color: var(--grey-600);
 		font-style: italic;
 	}
 }
 
 .property-empty {
-	color: var(--grey-500);
+	color: var(--grey-600);
 	font-style: italic;
 }
 
@@ -1760,7 +1760,7 @@ h2 .button {
 			text-align: start;
 
 			i {
-				color: var(--grey-500);
+				color: var(--grey-600);
 			}
 
 			&:hover {
