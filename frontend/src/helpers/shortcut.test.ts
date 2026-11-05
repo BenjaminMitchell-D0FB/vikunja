@@ -585,12 +585,9 @@ describe('isFormField', () => {
 
 describe('isTypingTarget', () => {
 	function keydownFrom(el: HTMLElement): KeyboardEvent {
-		let received: KeyboardEvent | undefined
-		document.body.appendChild(el)
-		el.addEventListener('keydown', e => received = e)
-		el.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true}))
-		el.remove()
-		return received!
+		const e = new KeyboardEvent('keydown')
+		el.dispatchEvent(e)
+		return e
 	}
 
 	it('should treat an element hosting a shadow root as a typing target', () => {
