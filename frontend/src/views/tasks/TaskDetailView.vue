@@ -1516,10 +1516,6 @@ h2 .button {
 	}
 }
 
-.task-actions-menu {
-	display: inline-flex;
-}
-
 .property-list {
 	margin: 0;
 	border-block-start: 1px solid var(--grey-200);
