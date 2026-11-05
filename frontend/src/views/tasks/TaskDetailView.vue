@@ -386,6 +386,7 @@
 								/>
 								<BaseButton
 									v-if="isSet.dueDate && canWrite"
+									v-tooltip="$t('task.detail.removeDueDate')"
 									class="remove"
 									:aria-label="$t('task.detail.removeDueDate')"
 									@click="() => {task.due_date = '';saveTask()}"
@@ -415,6 +416,7 @@
 								/>
 								<BaseButton
 									v-if="isSet.startDate && canWrite"
+									v-tooltip="$t('task.detail.removeStartDate')"
 									class="remove"
 									:aria-label="$t('task.detail.removeStartDate')"
 									@click="() => {task.start_date = '';saveTask()}"
@@ -444,6 +446,7 @@
 								/>
 								<BaseButton
 									v-if="isSet.endDate && canWrite"
+									v-tooltip="$t('task.detail.removeEndDate')"
 									class="remove"
 									:aria-label="$t('task.detail.removeEndDate')"
 									@click="() => {task.end_date = '';saveTask()}"
@@ -499,6 +502,7 @@
 								</BaseButton>
 								<BaseButton
 									v-if="isSet.repeatAfter && canWrite"
+									v-tooltip="$t('task.detail.removeRepeat')"
 									class="remove"
 									:aria-label="$t('task.detail.removeRepeat')"
 									@click="removeRepeatAfter"
@@ -540,6 +544,7 @@
 								/>
 								<BaseButton
 									v-if="isSet.color && canWrite"
+									v-tooltip="$t('task.detail.removeColor')"
 									class="remove"
 									:aria-label="$t('task.detail.removeColor')"
 									@click="() => {taskColor = '';saveTask()}"
