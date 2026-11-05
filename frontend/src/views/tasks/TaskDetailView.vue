@@ -481,12 +481,14 @@
 							class="property property-repeat"
 							:class="{'is-set': isSet.repeatAfter, 'is-expanded': repeatEditorOpen}"
 						>
-							<dt>
+							<dt id="task-property-repeat-label">
 								<Icon icon="history" />
 								{{ $t('task.attributes.repeat') }}
 							</dt>
 							<dd>
 								<BaseButton
+									id="task-property-repeat-value"
+									aria-labelledby="task-property-repeat-label task-property-repeat-value"
 									class="property-value-button"
 									:class="{'property-empty': !isSet.repeatAfter}"
 									:disabled="!canWrite"
