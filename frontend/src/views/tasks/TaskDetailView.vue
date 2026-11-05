@@ -1490,6 +1490,7 @@ h2 .button {
 	align-items: center;
 	justify-content: center;
 	inline-size: 2.5rem;
+	block-size: $button-height;
 	border-radius: $radius;
 	border: 1px solid var(--grey-300);
 	color: var(--grey-600);
@@ -1515,10 +1516,6 @@ h2 .button {
 
 .task-actions-menu {
 	display: inline-flex;
-
-	.toolbar-icon-button {
-		block-size: 100%;
-	}
 }
 
 .property-list {
