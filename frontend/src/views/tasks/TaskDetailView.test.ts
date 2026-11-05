@@ -36,6 +36,7 @@ import {taskKeys} from '@/client/queries/tasks'
 import EditLabels from '@/components/tasks/partials/EditLabels.vue'
 import PercentDoneSelect from '@/components/tasks/partials/PercentDoneSelect.vue'
 import Datepicker from '@/components/input/Datepicker.vue'
+import RelatedTasks from '@/components/tasks/partials/RelatedTasks.vue'
 import TaskDetailView from './TaskDetailView.vue'
 
 enableAutoUnmount(afterEach)
@@ -62,7 +63,7 @@ function dueDatePicker(wrapper: VueWrapper) {
 	return wrapper.findAllComponents(Datepicker)[0]!
 }
 
-async function mountDetail(taskId = 1, visited: RouteLocationRaw[] = [], backdropView?: string) {
+async function mountDetail(taskId = 1, visited: RouteLocationRaw[] = [], backdropView?: string, stubs: Record<string, unknown> = {}) {
 	queryClient = new QueryClient({defaultOptions: {queries: {retry: false}}})
 	const router = createRouter({
 		history: createMemoryHistory(),
@@ -86,7 +87,7 @@ async function mountDetail(taskId = 1, visited: RouteLocationRaw[] = [], backdro
 		global: {
 			plugins: [createPinia(), router, [VueQueryPlugin, {queryClient}]],
 			mocks: {$t: (key: string) => key},
-			stubs: {Icon: true, XButton: true, Modal: true, CustomTransition: {template: '<div><slot/></div>'}},
+			stubs: {Icon: true, XButton: true, Modal: true, ...stubs},
 			directives: {tooltip: () => {}, cy: () => {}, shortcut: () => {}},
 		},
 	})
@@ -274,5 +275,69 @@ describe('TaskDetailView in a trashed project', () => {
 
 		expect(wrapper.findComponent(TaskInTrashNotice).props('inTrash')).toEqual(taskInTrash)
 		expect(document.activeElement).toBe(wrapper.element)
+	})
+})
+
+describe('TaskDetailView property sidebar', () => {
+	beforeEach(() => {
+		sdk.tasksRead.mockReset()
+		sdk.patchTasksRead.mockReset()
+	})
+
+	function serve(overrides: Record<string, unknown> = {}) {
+		sdk.tasksRead.mockImplementation(async ({path}: {path: {task: number}}) => ({data: serverTask(path.task, overrides)}))
+		sdk.patchTasksRead.mockImplementation(async () => ({data: serverTask(1, overrides)}))
+	}
+
+	const renderButtons = {BaseButton: {template: '<button><slot/></button>'}}
+
+	it('keeps a section the user opened visible after saving another field', async () => {
+		serve()
+		const wrapper = await mountDetail()
+		expect(wrapper.findComponent(RelatedTasks).exists()).toBe(false)
+
+		document.body.dispatchEvent(new KeyboardEvent('keydown', {code: 'KeyR', key: 'r', bubbles: true}))
+		await flushPromises()
+		expect(wrapper.findComponent(RelatedTasks).exists()).toBe(true)
+
+		wrapper.findComponent(PercentDoneSelect).vm.$emit('update:modelValue', 0.9)
+		await flushPromises()
+
+		expect(sdk.patchTasksRead).toHaveBeenCalledOnce()
+		expect(wrapper.findComponent(RelatedTasks).exists()).toBe(true)
+	})
+
+	it('shows every property row to users who can edit the task', async () => {
+		serve({due_date: '', labels: []})
+		const wrapper = await mountDetail()
+
+		expect(wrapper.find('.property-due-date').exists()).toBe(true)
+		expect(wrapper.find('.property-labels').exists()).toBe(true)
+		expect(wrapper.find('.property-due-date').classes()).not.toContain('is-set')
+	})
+
+	it('only shows rows with a value to read-only users', async () => {
+		serve({max_permission: 0, labels: []})
+		const wrapper = await mountDetail()
+
+		expect(wrapper.find('.property-due-date').classes()).toContain('is-set')
+		expect(wrapper.find('.property-percent-done').exists()).toBe(true)
+		expect(wrapper.find('.property-labels').exists()).toBe(false)
+		expect(wrapper.find('.property-priority').exists()).toBe(false)
+		expect(wrapper.find('.sidebar-toolbar').exists()).toBe(false)
+	})
+
+	it.each([
+		[{repeat_after: 0, repeat_mode: 0}, 'misc.notSet'],
+		[{repeat_after: 172800, repeat_mode: 0}, 'task.repeat.summary.days'],
+		[{repeat_after: 3600, repeat_mode: 0}, 'task.repeat.summary.hours'],
+		[{repeat_after: 0, repeat_mode: 1}, 'task.repeat.monthly'],
+		[{repeat_after: 604800, repeat_mode: 2}, 'task.repeat.summary.fromCurrentDate'],
+		[{repeat_after: 0, repeat_mode: 2}, 'task.repeat.fromCurrentDate'],
+	])('summarizes repeat settings %o as %s', async (repeat, summary) => {
+		serve(repeat)
+		const wrapper = await mountDetail(1, [], undefined, renderButtons)
+
+		expect(wrapper.find('.property-repeat .property-value-button').text()).toBe(summary)
 	})
 })
