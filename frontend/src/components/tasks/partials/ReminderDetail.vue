@@ -11,7 +11,7 @@
 				<SimpleButton
 					ref="trigger"
 					v-tooltip="reminder.reminder && reminder.relative_to !== '' ? formatDisplayDate(reminder.reminder) : null"
-					:disabled="disabled || undefined"
+					:disabled="disabled"
 					@click.prevent.stop="toggle()"
 				>
 					{{ reminderText }}
