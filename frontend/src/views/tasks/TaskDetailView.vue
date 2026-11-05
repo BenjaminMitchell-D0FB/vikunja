@@ -628,7 +628,7 @@ import {getScrollParent} from '@/helpers/getScrollParent'
 import {TASK_REPEAT_MODES} from '@/types/IRepeatMode'
 import {REMINDER_PERIOD_RELATIVE_TO_TYPES} from '@/types/IReminderPeriodRelativeTo'
 import {playPopSound} from '@/helpers/playPop'
-import {isFormField, matchesKey, parseKey} from '@/helpers/shortcut'
+import {isTypingTarget, matchesKey, parseKey} from '@/helpers/shortcut'
 import {taskLoadErrorAction} from './taskDetailError'
 import TaskInTrashNotice from '@/components/tasks/partials/TaskInTrashNotice.vue'
 import ProjectInTrashNotice from '@/components/project/ProjectInTrashNotice.vue'
@@ -1108,7 +1108,7 @@ const fieldShortcuts = ([
 ] as const).map(([key, run]) => [parseKey(key), run] as const)
 
 function handleFieldShortcut(event: KeyboardEvent) {
-	if (!canWrite.value || event.defaultPrevented || event.repeat || event.isComposing || isFormField(event.target)) {
+	if (!canWrite.value || event.defaultPrevented || event.repeat || event.isComposing || isTypingTarget(event)) {
 		return
 	}
 	for (const [parsed, run] of fieldShortcuts) {

@@ -2,7 +2,16 @@ import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest'
 
 import {SHORTCUTS} from '@/constants/shortcuts'
 import * as appleDevice from '@/helpers/isAppleDevice'
-import {parseKey, matchesKey, eventToShortcutString, isFormField, install, uninstall, shortcutBindingToDisplay} from './shortcut'
+import {
+	parseKey,
+	matchesKey,
+	eventToShortcutString,
+	isFormField,
+	isTypingTarget,
+	install,
+	uninstall,
+	shortcutBindingToDisplay,
+} from './shortcut'
 
 function makeEvent(overrides: Partial<KeyboardEvent> = {}): KeyboardEvent {
 	const event = new KeyboardEvent('keydown')
@@ -571,6 +580,27 @@ describe('isFormField', () => {
 
 	it('should return false for null', () => {
 		expect(isFormField(null)).toBe(false)
+	})
+})
+
+describe('isTypingTarget', () => {
+	function keydownFrom(el: HTMLElement): KeyboardEvent {
+		let received: KeyboardEvent | undefined
+		document.body.appendChild(el)
+		el.addEventListener('keydown', e => received = e)
+		el.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true}))
+		el.remove()
+		return received!
+	}
+
+	it('should treat an element hosting a shadow root as a typing target', () => {
+		const host = document.createElement('div')
+		host.attachShadow({mode: 'open'})
+		expect(isTypingTarget(keydownFrom(host))).toBe(true)
+	})
+
+	it('should not treat a plain div as a typing target', () => {
+		expect(isTypingTarget(keydownFrom(document.createElement('div')))).toBe(false)
 	})
 })
 
