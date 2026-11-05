@@ -1339,9 +1339,9 @@
       "dateAndTime": "Date and time"
     },
     "repeat": {
-      "everyDay": "Every Day",
-      "everyWeek": "Every Week",
-      "every30d": "Every 30 Days",
+      "everyDay": "Every day",
+      "everyWeek": "Every week",
+      "every30d": "Every 30 days",
       "summary": {
         "minutes": "Every minute | Every {count} minutes",
         "hours": "Every hour | Every {count} hours",
