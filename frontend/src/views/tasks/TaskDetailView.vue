@@ -1467,7 +1467,6 @@ h2 .button {
 
 	.button--mark-done {
 		flex: 1 1 10rem;
-		white-space: normal;
 		line-height: 1.25;
 		padding-block: .25rem;
 		text-transform: none;
