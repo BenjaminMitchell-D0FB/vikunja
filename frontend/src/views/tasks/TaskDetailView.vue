@@ -1083,7 +1083,8 @@ function setFieldActive(fieldName: FieldType) {
 			return
 		}
 
-		const focusable = el.matches(FOCUSABLE) ? el : el.querySelector<HTMLElement>(FOCUSABLE)
+		// Multiselect's tabindex=-1 root forwards focus to its search input.
+		const focusable = el.matches(`[tabindex], ${FOCUSABLE}`) ? el : el.querySelector<HTMLElement>(FOCUSABLE)
 		focusable?.focus()
 
 		// Finish scrolling before the datepicker sheet locks the page.
