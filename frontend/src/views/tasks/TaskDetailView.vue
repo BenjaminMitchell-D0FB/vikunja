@@ -1460,12 +1460,13 @@ h2 .button {
 
 .sidebar-toolbar {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: stretch;
 	gap: .375rem;
 	margin-block-end: .75rem;
 
 	.button--mark-done {
-		flex: 1;
+		flex: 1 1 10rem;
 		text-transform: none;
 		justify-content: flex-start;
 		background-color: transparent;
