@@ -22,7 +22,7 @@ vi.mock('@/composables/useLabels', () => ({useLabels: () => ({filterLabelsByQuer
 vi.mock('vuemoji-picker', () => ({VuemojiPicker: {render: () => null}}))
 vi.mock('vue-i18n', async importOriginal => ({
 	...await importOriginal<typeof import('vue-i18n')>(),
-	useI18n: () => ({t: (key: string) => key}),
+	useI18n: () => ({t: (key: string, named?: Record<string, unknown>) => named ? `${key}:${JSON.stringify(named)}` : key}),
 }))
 
 vi.mock('@/i18n/lang/en.json', () => ({default: {}}))
@@ -329,10 +329,9 @@ describe('TaskDetailView property sidebar', () => {
 
 	it.each([
 		[{repeat_after: 0, repeat_mode: 0}, 'misc.notSet'],
-		[{repeat_after: 172800, repeat_mode: 0}, 'task.repeat.summary.days'],
-		[{repeat_after: 3600, repeat_mode: 0}, 'task.repeat.summary.hours'],
+		[{repeat_after: 172800, repeat_mode: 0}, 'task.repeat.summary.days:{"count":2}'],
 		[{repeat_after: 0, repeat_mode: 1}, 'task.repeat.monthly'],
-		[{repeat_after: 604800, repeat_mode: 2}, 'task.repeat.summary.fromCurrentDate'],
+		[{repeat_after: 604800, repeat_mode: 2}, 'task.repeat.summary.fromCurrentDate:{"interval":"task.repeat.summary.weeks:{\\"count\\":1}"}'],
 		[{repeat_after: 0, repeat_mode: 2}, 'task.repeat.fromCurrentDate'],
 	])('summarizes repeat settings %o as %s', async (repeat, summary) => {
 		serve(repeat)
