@@ -1708,6 +1708,11 @@ h2 .button {
 				background: var(--scheme-main);
 				border-color: var(--border);
 			}
+
+			&:focus-visible {
+				border-color: var(--primary);
+				@include focus-ring;
+			}
 		}
 	}
 
