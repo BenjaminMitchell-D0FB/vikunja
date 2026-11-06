@@ -5,28 +5,46 @@ export interface EmojiEntry {
 	tags: string[]
 }
 
-interface RawEmoji {
+export interface EmojiCatalogEntry {
 	shortcodes: string[]
 	annotation: string
 	tags?: string[]
 	emoji: string
+	group: number
+	order: number
+	skins?: {
+		emoji: string
+		tone: number | number[]
+	}[]
 }
 
 const MAX_RESULTS = 15
 
+let catalogCache: Promise<EmojiCatalogEntry[]> | null = null
 let cache: Promise<EmojiEntry[]> | null = null
 
 export function __resetEmojiCacheForTest() {
+	catalogCache = null
 	cache = null
+}
+
+export function loadEmojiCatalog(): Promise<EmojiCatalogEntry[]> {
+	if (catalogCache) return catalogCache
+	catalogCache = fetch('/emojis.json')
+		.then(res => {
+			if (!res.ok) throw new Error(`emojis.json HTTP ${res.status}`)
+			return res.json() as Promise<EmojiCatalogEntry[]>
+		})
+		.catch(err => {
+			catalogCache = null
+			throw err
+		})
+	return catalogCache
 }
 
 export function loadEmojis(): Promise<EmojiEntry[]> {
 	if (cache) return cache
-	cache = fetch('/emojis.json')
-		.then(res => {
-			if (!res.ok) throw new Error(`emojis.json HTTP ${res.status}`)
-			return res.json() as Promise<RawEmoji[]>
-		})
+	cache = loadEmojiCatalog()
 		.then(raw => {
 			const flat: EmojiEntry[] = []
 			for (const entry of raw) {

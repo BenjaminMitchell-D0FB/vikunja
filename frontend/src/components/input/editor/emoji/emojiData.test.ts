@@ -1,5 +1,5 @@
 import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest'
-import {filterEmojis, __resetEmojiCacheForTest, loadEmojis} from './emojiData'
+import {filterEmojis, __resetEmojiCacheForTest, loadEmojis, loadEmojiCatalog} from './emojiData'
 
 const fixture = [
 	{shortcodes: ['grinning', 'grinning_face'], annotation: 'grinning face', tags: ['face', 'grin'], emoji: '😀'},
@@ -54,5 +54,35 @@ describe('emojiData', () => {
 		await loadEmojis()
 		await loadEmojis()
 		expect((globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls).toHaveLength(1)
+	})
+})
+
+describe('emoji catalog', () => {
+	it('shares one request with autocomplete and retains categories and skin variants', async () => {
+		__resetEmojiCacheForTest()
+		const entry = {
+			emoji: '👋',
+			shortcodes: ['wave'],
+			annotation: 'waving hand',
+			group: 1,
+			order: 185,
+			skins: [{
+				emoji: '👋🏽',
+				tone: 3,
+			}],
+		}
+		const fetchMock = vi.fn().mockResolvedValue({
+			ok: true,
+			json: async () => [entry],
+		})
+		vi.stubGlobal('fetch', fetchMock)
+		try {
+			const [catalog, autocomplete] = await Promise.all([loadEmojiCatalog(), loadEmojis()])
+			expect(catalog).toEqual([entry])
+			expect(autocomplete[0].emoji).toBe('👋')
+			expect(fetchMock).toHaveBeenCalledTimes(1)
+		} finally {
+			vi.unstubAllGlobals()
+		}
 	})
 })
