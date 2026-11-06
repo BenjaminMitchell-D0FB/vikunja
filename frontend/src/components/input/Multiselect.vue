@@ -85,6 +85,7 @@
 				:class="{'search-results-inline': inline}"
 				role="listbox"
 				:aria-label="accessibleName"
+				tabindex="-1"
 			>
 				<BaseButton
 					v-for="(data, index) in filteredSearchResults"
