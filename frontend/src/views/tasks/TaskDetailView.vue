@@ -1471,6 +1471,7 @@ h2 .button {
 		padding-block: .25rem;
 		text-transform: none;
 		justify-content: flex-start;
+		text-align: start;
 		background-color: transparent;
 		box-shadow: none;
 
