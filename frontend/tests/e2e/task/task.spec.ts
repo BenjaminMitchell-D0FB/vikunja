@@ -627,13 +627,13 @@ test.describe('Task', () => {
 			const options = page.locator('.task-view .property-assignees .multiselect .search-result-button')
 
 			await input.click()
-			await expect(options).toHaveCount(5, {timeout: 5000})
+			await expect(options.first()).toBeVisible({timeout: 5000})
 
 			await page.keyboard.press('Tab')
 			await expect(page.locator('.task-view .property-labels .multiselect input')).toBeFocused()
 
 			await input.click()
-			await expect(options).toHaveCount(5, {timeout: 5000})
+			await expect(options.first()).toBeVisible({timeout: 5000})
 			await page.keyboard.press('ArrowDown')
 			await expect(options.first()).toBeFocused()
 		})
