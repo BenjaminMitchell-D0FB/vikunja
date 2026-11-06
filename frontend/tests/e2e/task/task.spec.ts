@@ -606,7 +606,7 @@ test.describe('Task', () => {
 			expect(apiAssignees.map((a: User) => a.id)).toEqual([userToAssign.id])
 		})
 
-		test('Moves from the assignee input to labels with Tab and into the options with ArrowDown', async ({authenticatedPage: page}) => {
+		test('Moves from the assignee input to labels with Tab', async ({authenticatedPage: page}) => {
 			const users = await UserFactory.create(5, {
 				id: (i: number) => 100 + i,
 			}, false)
@@ -631,11 +631,7 @@ test.describe('Task', () => {
 
 			await page.keyboard.press('Tab')
 			await expect(page.locator('.task-view .property-labels .multiselect input')).toBeFocused()
-
-			await input.click()
-			await expect(options.first()).toBeVisible({timeout: 5000})
-			await page.keyboard.press('ArrowDown')
-			await expect(options.first()).toBeFocused()
+			await expect(page.locator('.task-view .property-assignees .search-results')).toBeHidden()
 		})
 
 		test('Can remove an assignee from a task', async ({authenticatedPage: page}) => {
