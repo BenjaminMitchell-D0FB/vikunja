@@ -6,6 +6,7 @@
 		tabindex="-1"
 		:aria-disabled="disabled"
 		@focus="focus"
+		@focusout="handleFocusOut"
 	>
 		<div
 			class="control"
@@ -401,6 +402,13 @@ function hideSearchResultsHandler(e: MouseEvent) {
 
 function closeSearchResults() {
 	showSearchResults.value = false
+}
+
+// A null relatedTarget is ignored: iOS Safari doesn't focus a tapped option, so closing here would drop the click.
+function handleFocusOut(e: FocusEvent) {
+	if (e.relatedTarget instanceof Node && !multiselectRoot.value?.contains(e.relatedTarget)) {
+		closeSearchResults()
+	}
 }
 
 function handleEscape(e: KeyboardEvent) {
