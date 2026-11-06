@@ -241,13 +241,9 @@ const emit = defineEmits<{
 				color: var(--grey-600);
 			}
 
-			&:hover {
+			&:hover:not(:disabled) {
 				background: var(--scheme-main);
 			}
-		}
-
-		&.disabled .show:hover {
-			background: transparent;
 		}
 	}
 
